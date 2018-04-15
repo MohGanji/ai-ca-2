@@ -65,11 +65,15 @@ def evaluate(pred):
 	return res
 
 def evaluate_schedules(schedules):
+	""" sorting schedules by their evaluation value
+	"""
 	sortedList = sorted(schedules, key=evaluate, reverse=True )
 	return sortedList
 
 
 def selection(schedules):
+	""" selecting SELECTION_RATE of schedules for crossover
+	"""
 	upper_bound = int(len(schedules)*SELECTION_RATE)
 	return schedules[:upper_bound]
 
@@ -79,7 +83,8 @@ def mutation(schedules):
 	pass
 
 def crossover(a, b):
-	""" crossover between schedules a and b, selecting upper bound with CROSSOVER_BOUND
+	""" crossover between schedules a and b,
+		selecting upper bound with CROSSOVER_BOUND
 	"""
 	pass
 
