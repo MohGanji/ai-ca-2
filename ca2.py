@@ -3,11 +3,10 @@ from tqdm import tqdm
 import numpy as np
 from colorama import Fore, Back, Style
 
-# for i in tqdm(range(10000000)):
-#     pass
-#     # if i % 1000000:
-#         # print(Fore.RED + 'some orange text')
-
+# CONSTANTS:
+MUTATION_PROB = 0.1
+CROSSOVER_BOUND = 0.5
+SELECTION_RATE = 0.5
 
 d, t, course_cnt = 0, 0, 0
 course_happiness = []
@@ -66,17 +65,22 @@ def evaluate(pred):
 	return res
 
 def evaluate_schedules(schedules):
-	sortedList = sorted(schedules, key=evaluate )
+	sortedList = sorted(schedules, key=evaluate, reverse=True )
 	return sortedList
 
 
 def selection(schedules):
+	upper_bound = int(len(schedules)*SELECTION_RATE)
+	return schedules[:upper_bound]
+
+def mutation(schedules):
+	""" mutate schedules with probability of MUTATION_PROB
+	"""
 	pass
 
-def mutation():
-	pass
-
-def crossover():
+def crossover(a, b):
+	""" crossover between schedules a and b, selecting upper bound with CROSSOVER_BOUND
+	"""
 	pass
 
 def main():
