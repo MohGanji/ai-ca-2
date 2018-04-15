@@ -108,6 +108,8 @@ def selection(schedules):
 	""" selecting SELECTION_RATE of schedules for crossover
 	"""
 	upper_bound = int(len(schedules)*SELECTION_RATE)
+	if upper_bound % 2:
+		upper_bound += 1
 	return schedules[:upper_bound]
 
 def mutate(schedule):
@@ -148,8 +150,6 @@ def crossover(schedule_a, schedule_b):
 	new_b = schedule_b[:upper_bound] + schedule_a[upper_bound:]
 	return new_a, new_b
 
-	pass
-
 def pretty_print(desc, objs):
 	print Fore.GREEN, "{}:".format(desc), Fore.WHITE
 	for obj in objs:
@@ -165,8 +165,12 @@ def main():
 	# pretty_print('Schedules',[schedules], False)
 	for i in xrange(0, GENERATION_CNT):
 		sorted_schedules = evaluate_schedules(schedules)
-		# pretty_print('sorted_schedules', sorted_schedules)
-
+		pretty_print('sorted_schedules', sorted_schedules)
+		selected = selection(sorted_schedules)
+		for i in xrange(0, len(selected), 2):
+			sorted_schedules[i], sorted_schedules[i+1] = crossover(selected[i], selected[i+1])
+		pretty_print('crossed_over', sorted_schedules)
+		
 
 
 		
