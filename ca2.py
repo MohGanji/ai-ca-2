@@ -34,10 +34,11 @@ def init():
 		schedule = [[] for j in xrange(0, d*t)]
 		courses = np.random.permutation([(random.choice(course_prof[i]), i) for i in xrange(1, course_cnt+1)]).tolist()
 		# print "random per: ", courses
-		for i in xrange(0, d*t):
-			if course_is_safe(schedule[i], courses[-1]):
-				schedule[i].append(courses[-1])
-			courses.pop()
+		while(len(courses) != 0):
+			for i in xrange(0, d*t):
+				if course_is_safe(schedule[i], courses[-1]):
+					schedule[i].append(courses[-1])
+				courses.pop()
 		result.append(schedule)
 	# print "init result: ", result
 	return result
