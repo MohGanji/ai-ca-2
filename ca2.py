@@ -39,11 +39,13 @@ def read_input():
 	# print prof_course
 	# print conflict_table
 
-def evaluate(pred):
-	""" pred: 
-	{
-		(d,t): [(p, c), ...] 
-	}
+def evaluate(schedules):
+	""" schedules: 
+	[
+		[(p, c), ...], => schedule 
+		[(p, c), ...], 
+		[(p, c), ...] 
+	]
 	"""
 	# pred = {
 	# 	(1, 1): [(1, 1), (2, 2), (3,3)],
@@ -57,9 +59,9 @@ def evaluate(pred):
 	# 	[0, 1, 1, 0]
 	# ]
 	res = 0
-	for key, val in pred.iteritems():
-		for ind, course1 in enumerate(val):
-			for course2 in val[ind:]:
+	for schedule in schedules:
+		for ind, course1 in enumerate(schedule):
+			for course2 in schedule[ind:]:
 				if not course1[1] == course2[1]:
 					res += conflict_table[course1[1]][course2[1]]
 	return res
@@ -77,15 +79,44 @@ def selection(schedules):
 	upper_bound = int(len(schedules)*SELECTION_RATE)
 	return schedules[:upper_bound]
 
+def mutate(schedule):
+	""" mutate a schedule: 
+		change place of a course from a time-slot to another
+	"""
+	limit = 10
+	while(limit)
+		first_timeslot = random.choice(schedule)
+		second_timeslot = random.choice(schedule)
+		if not first_timeslot == second_timeslot and len(first_timeslot) > 0:
+			course_to_change = first_timeslot.pop()
+			if course_is_safe(second_timeslot, course_to_change):
+				second_timeslot.append(course_to_change)
+				return schedule
+			else:
+				first_timeslot.append(course_to_change)
+		limit -= 1
+	return schedule
+
 def mutation(schedules):
 	""" mutate schedules with probability of MUTATION_PROB
 	"""
-	pass
+	new_schedules = []
+	for schedule in schedules:
+		if random.uniform(0, 1) < MUTATION_PROB:
+			schedules.append(mutate(schedule))
+		else:
+			schedules.append(schedule)
+	return schedules
 
-def crossover(a, b):
+def crossover(schedule_a, schedule_b):
 	""" crossover between schedules a and b,
 		selecting upper bound with CROSSOVER_BOUND
 	"""
+	upper_bound = int(len(schedule_a)*CROSSOVER_BOUND)
+	new_a = schedule_a[:upper_bound] + schedule_b[upper_bound:]
+	new_b = schedule_b[:upper_bound] + schedule_a[upper_bound:]
+	return new_a, new_b
+
 	pass
 
 def main():
