@@ -89,19 +89,19 @@ def evaluate(schedules):
 	# ]
 	res = 0
 	for schedule in schedules:
-		print "Sss: ", schedule
+		# print "Sss: ", schedule
 		for ind, course1 in enumerate(schedule):
 			for course2 in schedule[ind:]:
 				if not course1[1] == course2[1]:
 					res += conflict_table[course1[1]][course2[1]]
-	print
+	# print
 	return res
 
 def evaluate_schedules(schedules):
 	""" sorting schedules by their evaluation value
 	"""
-	sorted_schedules = sorted(schedules, key=evaluate, reverse=True )
-	sorted_schedules = [(s, evaluate(s)) for s in sorted_schedules]
+	sorted_schedules = sorted(schedules, key=evaluate )
+	# sorted_schedules = [(s, evaluate(s)) for s in sorted_schedules]
 	return sorted_schedules
 
 def selection(schedules):
@@ -165,7 +165,10 @@ def main():
 	# pretty_print('Schedules',[schedules], False)
 	for i in xrange(0, GENERATION_CNT):
 		sorted_schedules = evaluate_schedules(schedules)
-		pretty_print('sorted_schedules', sorted_schedules)
+		# pretty_print('sorted_schedules', sorted_schedules)
+
+
+
 		
 
 main()
