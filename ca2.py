@@ -23,12 +23,12 @@ def read_input():
 		points = map(int, raw_input().split(' '))
 		points = [0] + points
 		conflict_table.append(points)
-	print d, t
-	print course_cnt
-	print course_happiness
-	print prof_cnt
-	print prof_course
-	print conflict_table
+	# print d, t
+	# print course_cnt
+	# print course_happiness
+	# print prof_cnt
+	# print prof_course
+	# print conflict_table
 
 
 def eval():
