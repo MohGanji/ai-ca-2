@@ -136,10 +136,14 @@ def mutation(schedules):
 	new_schedules = []
 	for schedule in schedules:
 		if random.uniform(0, 1) < MUTATION_PROB:
-			schedules.append(mutate(schedule))
+			print Fore.RED,'\n', schedule
+			m = mutate(schedule)
+			new_schedules.append(m)
+			print Fore.BLUE, m, Fore.WHITE
 		else:
-			schedules.append(schedule)
-	return schedules
+			new_schedules.append(schedule)
+			# print 'HERE'
+	return new_schedules
 
 def crossover(schedule_a, schedule_b):
 	""" crossover between schedules a and b,
@@ -158,20 +162,29 @@ def pretty_print(desc, objs):
 
 def main():
 	global d, t, course_cnt, course_happiness, prof_cnt, prof_course, conflict_table, CHROMOSOME_CNT	
+	result_schedule = []
+	result_val = 10**100
 	# pretty_print('before read_input', [d, t, course_cnt, course_happiness, prof_cnt, prof_course, conflict_table, CHROMOSOME_CNT])
 	read_input()
 	# pretty_print('after read_input', [d, t, course_cnt, course_happiness, prof_cnt, prof_course, conflict_table, CHROMOSOME_CNT])	
 	schedules = init()
 	# pretty_print('Schedules',[schedules], False)
 	for i in xrange(0, GENERATION_CNT):
-		sorted_schedules = evaluate_schedules(schedules)
+		min_val, sorted_schedules = evaluate_schedules(schedules)
+		if min_val == 0:
+			result_schedule = sorted_schedules[0]
+			break
+		elif min_val < result_val:
+			result_schedule = sorted_schedules[0]
+			result_val = min_val
+			
 		pretty_print('sorted_schedules', sorted_schedules)
 		selected = selection(sorted_schedules)
 		for i in xrange(0, len(selected), 2):
 			sorted_schedules[i], sorted_schedules[i+1] = crossover(selected[i], selected[i+1])
-		pretty_print('crossed_over', sorted_schedules)
-		
-
+		# pretty_print('crossed_over', sorted_schedules)
+		schedules = mutation(sorted_schedules)
+		# pretty_print('mutated', mutated_schedules)
 
 		
 
