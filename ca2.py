@@ -40,8 +40,7 @@ def read_input():
 	# print prof_course
 	# print conflict_table
 
-
-def eval(pred):
+def evaluate(pred):
 	""" pred: 
 	{
 		(d,t): [(p, c), ...] 
@@ -64,10 +63,14 @@ def eval(pred):
 			for course2 in val[ind:]:
 				if not course1[1] == course2[1]:
 					res += conflict_table[course1[1]][course2[1]]
-
 	return res
 
-def selection():
+def evaluate_schedules(schedules):
+	sortedList = sorted(schedules, key=evaluate )
+	return sortedList
+
+
+def selection(schedules):
 	pass
 
 def mutation():
@@ -78,6 +81,9 @@ def crossover():
 
 def main():
 	read_input()
+
+	schedules = []
+	schedules = evaluate_schedules(schedules)	
 
 
 main()
