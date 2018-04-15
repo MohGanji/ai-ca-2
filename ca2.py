@@ -3,14 +3,16 @@ from collections import defaultdict
 import random
 
 from tqdm import tqdm 
-import numpy as np
 from colorama import Fore, Back, Style
 
 # CONSTANTS:
 MUTATION_PROB = 0.1
 CROSSOVER_BOUND = 0.5
 SELECTION_RATE = 0.5
+CHROMOSOME_CNT = 30
+GENERATION_CNT = 1
 
+# GLOBALS
 d, t, course_cnt = 0, 0, 0
 course_happiness = []
 prof_cnt = 0
@@ -18,7 +20,6 @@ prof_course = {}
 course_prof = defaultdict(list)
 conflict_table = []
 
-CHROMOSOME_CNT = 30
 
 def course_is_safe(courses, course):
 	for c in courses:
@@ -62,9 +63,9 @@ def read_input():
 	# print course_cnt
 	# print course_happiness
 	# print prof_cnt
-	print prof_course
+	# print prof_course
 	# print conflict_table
-	print course_prof
+	# print course_prof
 
 def evaluate(schedules):
 	""" schedules: 
@@ -87,18 +88,20 @@ def evaluate(schedules):
 	# ]
 	res = 0
 	for schedule in schedules:
+		print "Sss: ", schedule
 		for ind, course1 in enumerate(schedule):
 			for course2 in schedule[ind:]:
 				if not course1[1] == course2[1]:
 					res += conflict_table[course1[1]][course2[1]]
+	print
 	return res
 
 def evaluate_schedules(schedules):
 	""" sorting schedules by their evaluation value
 	"""
-	sortedList = sorted(schedules, key=evaluate, reverse=True )
-	return sortedList
-
+	sorted_schedules = sorted(schedules, key=evaluate, reverse=True )
+	sorted_schedules = [(s, evaluate(s)) for s in sorted_schedules]
+	return sorted_schedules
 
 def selection(schedules):
 	""" selecting SELECTION_RATE of schedules for crossover
@@ -111,7 +114,7 @@ def mutate(schedule):
 		change place of a course from a time-slot to another
 	"""
 	limit = 10
-	while(limit)
+	while(limit):
 		first_timeslot = random.choice(schedule)
 		second_timeslot = random.choice(schedule)
 		if not first_timeslot == second_timeslot and len(first_timeslot) > 0:
@@ -146,12 +149,22 @@ def crossover(schedule_a, schedule_b):
 
 	pass
 
+def pretty_print(desc, objs):
+	print Fore.GREEN, "{}:".format(desc), Fore.WHITE
+	for obj in objs:
+		print obj
+	return
+
 def main():
+	global d, t, course_cnt, course_happiness, prof_cnt, prof_course, conflict_table, CHROMOSOME_CNT	
+	# pretty_print('before read_input', [d, t, course_cnt, course_happiness, prof_cnt, prof_course, conflict_table, CHROMOSOME_CNT])
 	read_input()
-	init()
-
-	schedules = []
-	schedules = evaluate_schedules(schedules)	
-
+	# pretty_print('after read_input', [d, t, course_cnt, course_happiness, prof_cnt, prof_course, conflict_table, CHROMOSOME_CNT])	
+	schedules = init()
+	# pretty_print('Schedules',[schedules], False)
+	for i in xrange(0, GENERATION_CNT):
+		sorted_schedules = evaluate_schedules(schedules)
+		pretty_print('sorted_schedules', sorted_schedules)
+		
 
 main()
