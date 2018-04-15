@@ -10,7 +10,7 @@ MUTATION_PROB = 0.1
 CROSSOVER_BOUND = 0.5
 SELECTION_RATE = 0.5
 CHROMOSOME_CNT = 30
-GENERATION_CNT = 1
+GENERATION_CNT = 1000
 
 # GLOBALS
 d, t, course_cnt = 0, 0, 0
@@ -101,8 +101,9 @@ def evaluate_schedules(schedules):
 	""" sorting schedules by their evaluation value
 	"""
 	sorted_schedules = sorted(schedules, key=evaluate )
+	min_val = evaluate(sorted_schedules[0])
 	# sorted_schedules = [(s, evaluate(s)) for s in sorted_schedules]
-	return sorted_schedules
+	return min_val, sorted_schedules
 
 def selection(schedules):
 	""" selecting SELECTION_RATE of schedules for crossover
@@ -136,10 +137,10 @@ def mutation(schedules):
 	new_schedules = []
 	for schedule in schedules:
 		if random.uniform(0, 1) < MUTATION_PROB:
-			print Fore.RED,'\n', schedule
+			# print Fore.RED,'\n', schedule
 			m = mutate(schedule)
 			new_schedules.append(m)
-			print Fore.BLUE, m, Fore.WHITE
+			# print Fore.BLUE, m, Fore.WHITE
 		else:
 			new_schedules.append(schedule)
 			# print 'HERE'
@@ -178,7 +179,7 @@ def main():
 			result_schedule = sorted_schedules[0]
 			result_val = min_val
 			
-		pretty_print('sorted_schedules', sorted_schedules)
+		# pretty_print('sorted_schedules', sorted_schedules)
 		selected = selection(sorted_schedules)
 		for i in xrange(0, len(selected), 2):
 			sorted_schedules[i], sorted_schedules[i+1] = crossover(selected[i], selected[i+1])
@@ -186,6 +187,8 @@ def main():
 		schedules = mutation(sorted_schedules)
 		# pretty_print('mutated', mutated_schedules)
 
+	print result_schedule
+	print min_val
 		
 
 main()
