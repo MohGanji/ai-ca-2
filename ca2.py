@@ -47,7 +47,7 @@ def read_input():
 	global d, t, course_cnt, course_happiness, prof_cnt, prof_course, conflict_table
 	d, t = map(int, raw_input().split(' '))
 	course_cnt = input()
-	course_happiness = map(int, raw_input().split(' '))
+	course_happiness = [0] + map(int, raw_input().split(' '))
 	prof_cnt = input()
 	for i in xrange(1, prof_cnt+1):
 		courses = map(int, raw_input().split(' '))
@@ -87,10 +87,11 @@ def evaluate(schedules):
 	# 	[0, 1, 0, 1],
 	# 	[0, 1, 1, 0]
 	# ]
-	res = 0
+	res = sum(course_happiness)
 	for schedule in schedules:
 		# print "Sss: ", schedule
 		for ind, course1 in enumerate(schedule):
+			res -= course_happiness[course1[1]]			
 			for course2 in schedule[ind:]:
 				if not course1[1] == course2[1]:
 					res += conflict_table[course1[1]][course2[1]]
