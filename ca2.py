@@ -310,7 +310,7 @@ def main():
 
 
 	# print final_result_schedule
-	print final_result,
+	print final_result
 	# print 'of', sum(course_happiness)
 	for ind, day in enumerate(final_result_schedule['schedule']):
 		for ind_course, course in enumerate(day):
