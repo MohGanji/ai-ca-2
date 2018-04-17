@@ -6,10 +6,10 @@ from tqdm import tqdm
 from colorama import Fore, Back, Style
 
 # CONSTANTS:
-MUTATION_PROB = 0.5
-SELECTION_RATE = 0.5
-CHROMOSOME_CNT = 1000
-GENERATION_CNT = 5000
+MUTATION_PROB = 0.3
+SELECTION_RATE = 0.3
+CHROMOSOME_CNT = 2000
+GENERATION_CNT = 10000
 
 # GLOBALS
 d, t, course_cnt = 0, 0, 0
@@ -151,9 +151,9 @@ def mutate(schedule):
 				first_timeslot.append(course_to_change)
 		limit -= 1
 
-	# if limit == 0 and course_to_change[1] != -1 and len(first_timeslot):
-	# 	first_timeslot.pop()		
-	# 	schedule['course_list'][course_to_change[1]] = False
+	if limit == 0 and course_to_change[1] != -1 and len(first_timeslot):
+		course_to_pop = first_timeslot.pop()		
+		schedule['course_list'][course_to_pop[1]] = False
 	
 	for i in range(1, course_cnt+1):
 		# print(course_prof)
@@ -162,7 +162,7 @@ def mutate(schedule):
 			if len(course_prof[i]):
 				schedule['schedule'][choose_best_day(schedule)].append((random.choice(course_prof[i]), i))
 				schedule['course_list'][i] = True
-				break
+				# break
 			
 	return schedule
 
@@ -278,18 +278,17 @@ def main():
 	for i in xrange(0, GENERATION_CNT):
 		if now_sec() - start_time >= 2*60:
 			break
-		best_val, sorted_schedules = evaluate_schedules(schedules)
 
-		if now_sec() - period_check_time >= 30:
-			print 'old', old_final
-			print 'best', best_val
-			if old_final > best_val:
+		if now_sec() - period_check_time >= 20:
+			# print 'old', old_final
+			# print 'best', final_result
+			if old_final == final_result:
 				break
 			else:
-				old_final = best_val
+				old_final = final_result
 				period_check_time = now_sec()
 
-		min_val, sorted_schedules = evaluate_schedules(schedules)
+		best_val, sorted_schedules = evaluate_schedules(schedules)
 		#
 		if best_val == sum(course_happiness):
 			final_result_schedule = sorted_schedules[0]
@@ -310,9 +309,9 @@ def main():
 		check(final_result_schedule)
 
 
-	print final_result_schedule
+	# print final_result_schedule
 	print final_result,
-	print 'of', sum(course_happiness)
+	# print 'of', sum(course_happiness)
 	for ind, day in enumerate(final_result_schedule['schedule']):
 		for ind_course, course in enumerate(day):
 			print int(ind/d)+1, ind%d + 1, course[1], course[0]
