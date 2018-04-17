@@ -7,9 +7,9 @@ from colorama import Fore, Back, Style
 
 # CONSTANTS:
 MUTATION_PROB = 0.1
-SELECTION_RATE = 0.5
-CHROMOSOME_CNT = 500
-GENERATION_CNT = 10000
+SELECTION_RATE = 0.4
+CHROMOSOME_CNT = 10000
+GENERATION_CNT = 100
 
 # GLOBALS
 d, t, course_cnt = 0, 0, 0
@@ -91,15 +91,16 @@ def evaluate(schedule):
 	# 	[0, 1, 0, 1],
 	# 	[0, 1, 1, 0]
 	# ]
-	res = sum(course_happiness)
+	# res = sum(course_happiness)
+	res = 0
 	for day in schedule['schedule']:
 		# print "Sss: ", day
 		for ind, course1 in enumerate(day):
 			# print(course1)
-			res -= course_happiness[course1[1]]			
+			res += course_happiness[course1[1]]			
 			for course2 in day[ind:]:
 				if not course1[1] == course2[1]:
-					res += conflict_table[course1[1]][course2[1]]
+					res -= conflict_table[course1[1]][course2[1]]
 	# print
 	return res
 
@@ -242,22 +243,22 @@ def check(schedule):
 def main():
 	global d, t, course_cnt, course_happiness, prof_cnt, prof_course, conflict_table, CHROMOSOME_CNT	
 	final_result_schedule = []
-	final_result = 10**100
+	final_result = -10**100
 	# pretty_print('before read_input', [d, t, course_cnt, course_happiness, prof_cnt, prof_course, conflict_table, CHROMOSOME_CNT])
 	read_input()
 	# pretty_print('after read_input', [d, t, course_cnt, course_happiness, prof_cnt, prof_course, conflict_table, CHROMOSOME_CNT])	
 	schedules = init()
 	# pretty_print('Schedules',[schedules])
 	for i in xrange(0, GENERATION_CNT):
-		min_val, sorted_schedules = evaluate_schedules(schedules)
+		best_val, sorted_schedules = evaluate_schedules(schedules)
 		#
-		if min_val == 0:
+		if best_val == sum(course_happiness):
 			final_result_schedule = sorted_schedules[0]
-			final_result = min_val
+			final_result = best_val
 			break
-		elif min_val < final_result:
+		elif best_val > final_result:
 			final_result_schedule = sorted_schedules[0]
-			final_result = min_val
+			final_result = best_val
 			
 		# pretty_print('sorted_schedules', sorted_schedules)
 		selected = selection(sorted_schedules)
@@ -269,9 +270,10 @@ def main():
 		# pretty_print('mutated', mutated_schedules)
 
 	print final_result_schedule
-	print sum([ len(i) for i in final_result_schedule['schedule']])
-	print len(final_result_schedule['course_list'])
-	print final_result
+	# print sum([ len(i) for i in final_result_schedule['schedule']])
+	# print len(final_result_schedule['course_list'])
+	print final_result,
+	print 'of', sum(course_happiness)
 		
 
 main()
