@@ -290,10 +290,13 @@ def main():
 
 
 	print final_result_schedule
-	# print sum([ len(i) for i in final_result_schedule['schedule']])
-	# print len(final_result_schedule['course_list'])
 	print final_result,
 	print 'of', sum(course_happiness)
+	for ind, day in enumerate(final_result_schedule['schedule']):
+		for ind_course, course in enumerate(day):
+			print int(ind/d)+1, ind%d + 1, course[1], course[0]
+	# print sum([ len(i) for i in final_result_schedule['schedule']])
+	# print len(final_result_schedule['course_list'])
 		
 
 main()
