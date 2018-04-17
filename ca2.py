@@ -6,10 +6,10 @@ from tqdm import tqdm
 from colorama import Fore, Back, Style
 
 # CONSTANTS:
-MUTATION_PROB = 0.1
-SELECTION_RATE = 0.4
-CHROMOSOME_CNT = 10000
-GENERATION_CNT = 100
+MUTATION_PROB = 0.5
+SELECTION_RATE = 0.5
+CHROMOSOME_CNT = 1000
+GENERATION_CNT = 5000
 
 # GLOBALS
 d, t, course_cnt = 0, 0, 0
@@ -120,7 +120,17 @@ def selection(schedules):
 		upper_bound += 1
 	return schedules[:upper_bound]
 
+def choose_best_day(schedule):
+	best_ind = -1
+	best_len = 10**100
+	for ind, day in enumerate(schedule['schedule']):
+		if len(day) < best_len:
+			best_len = len(day)
+			best_ind = ind
+	return ind
+
 def mutate(schedule):
+	global d, t, course_cnt, course_happiness, prof_cnt, prof_course, course_prof, conflict_table	
 	""" mutate a schedule: 
 		change place of a course from a time-slot to another
 	"""
@@ -137,9 +147,20 @@ def mutate(schedule):
 			else:
 				first_timeslot.append(course_to_change)
 		limit -= 1
-	# if limit == 0 and course_to_change[1] != -1:
+
+	# if limit == 0 and course_to_change[1] != -1 and len(first_timeslot):
+	# 	first_timeslot.pop()		
 	# 	schedule['course_list'][course_to_change[1]] = False
 	
+	for i in range(1, course_cnt+1):
+		# print(course_prof)
+		if not (i in schedule['course_list']) or \
+			schedule['course_list'][i] == False:
+			if len(course_prof[i]):
+				schedule['schedule'][choose_best_day(schedule)].append((random.choice(course_prof[i]), i))
+				schedule['course_list'][i] = True
+				break
+			
 	return schedule
 
 def mutation(schedules):
@@ -183,7 +204,6 @@ def suitable_day(schedule, day, first_course_list):
 	return res
 
 def crossover(schedule_a, schedule_b):
-	global gl
 	""" crossover between schedules a and b,
 		selecting upper bound with CROSSOVER_BOUND
 	"""
@@ -268,6 +288,7 @@ def main():
 		# pretty_print('crossed_over', sorted_schedules)
 		schedules = mutation(sorted_schedules)
 		# pretty_print('mutated', mutated_schedules)
+		check(final_result_schedule)
 
 	print final_result_schedule
 	print final_result,
